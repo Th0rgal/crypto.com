@@ -20,7 +20,7 @@ class Client:
         self.user_agent = user_agent
 
     def connect(self, api_key, api_secret):
-        self.api_secret = api_key
+        self.api_key = api_key
         self.api_secret = api_secret
 
     async def load(self):
