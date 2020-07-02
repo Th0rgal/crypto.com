@@ -10,7 +10,6 @@ class DataStream:
     def __init__(self, client, endpoint, user_agent):
         self.client = client
         self.endpoint = endpoint
-        self.session = None
         if user_agent:
             self.user_agent = user_agent
         else:
