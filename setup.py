@@ -1,5 +1,5 @@
 import setuptools
-from binance import __version__
+from cryptocom import __version__
 
 with open("README.md", "r") as fh:
     long_description = fh.read()
