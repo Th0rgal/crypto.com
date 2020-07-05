@@ -76,7 +76,7 @@ class DataStream:
                     "sig": self.client._generate_signature(payload),
                 }
             )
-        #await self.web_socket.send_json(request)
+        await self.web_socket.send_json(request)
 
     async def _handle_response(self, method, data):
         if method == "public/heartbeat":
@@ -93,3 +93,11 @@ class DataStream:
 
     async def auth(self):
         await self.request("public/auth", signed=True)
+
+class UserDataStream(DataStream):
+    def __init__(self, client, endpoint, user_agent):
+        super().__init__(client, endpoint, user_agent)
+
+class MarketDataStream(DataStream):
+    def __init__(self, client, endpoint, user_agent):
+        super().__init__(client, endpoint, user_agent)

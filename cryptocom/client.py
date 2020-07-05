@@ -1,4 +1,4 @@
-from .web_sockets import DataStream
+from .web_sockets import UserDataStream, MarketDataStream
 from enum import Enum
 import hashlib
 import hmac
@@ -20,8 +20,10 @@ class Client:
         self.user_agent = user_agent
 
     async def load(self):
-        self.user_data_stream = DataStream(self,  f"{self.endpoint}/user", self.user_agent)
+        self.user_data_stream = UserDataStream(self,  f"{self.endpoint}/user", self.user_agent)
+        self.market_data_stream = MarketDataStream(self,  f"{self.endpoint}/market", self.user_agent)
         await self.user_data_stream.connect()
+        await self.market_data_stream.connect()
 
     def _generate_signature(self, data):
         return hmac.new(
