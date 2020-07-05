@@ -19,10 +19,6 @@ class Client:
         self.endpoint = endpoint
         self.user_agent = user_agent
 
-    def connect(self, api_key, api_secret):
-        self.api_key = api_key
-        self.api_secret = api_secret
-
     async def load(self):
         self.user_data_stream = DataStream(self,  f"{self.endpoint}/user", self.user_agent)
         await self.user_data_stream.connect()

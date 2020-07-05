@@ -26,13 +26,11 @@ class DataStream:
         msg = await web_socket.receive()
         if msg.type in (aiohttp.WSMsgType.CLOSED, aiohttp.WSMsgType.CLOSE):
             logging.error("The websocket is closed! Trying to reconnect.")
-            asyncio.ensure_future(self.connect())
-            return False
+            await self.connect() #todo: avoid reaching recursion limit
 
         elif msg.type is aiohttp.WSMsgType.ERROR:
             logging.error(f"Something went wrong with the websocket, reconnecting...")
-            asyncio.ensure_future(self.connect())
-            return False
+            await self.connect() #todo: avoid reaching recursion limit
 
         data = json.loads(msg.data)
         if "code" in data:
