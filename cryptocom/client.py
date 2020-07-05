@@ -20,10 +20,11 @@ class Client:
         self.user_agent = user_agent
 
     async def load(self):
-        self.user_data_stream = UserDataStream(self,  f"{self.endpoint}/user", self.user_agent)
-        self.market_data_stream = MarketDataStream(self,  f"{self.endpoint}/market", self.user_agent)
-        await self.user_data_stream.connect()
-        await self.market_data_stream.connect()
+        self.user = UserDataStream(self,  f"{self.endpoint}/user", self.user_agent)
+        self.market = MarketDataStream(self,  f"{self.endpoint}/market", self.user_agent)
+        await self.user.connect()
+        await self.market.connect()
+       
 
     def _generate_signature(self, data):
         return hmac.new(

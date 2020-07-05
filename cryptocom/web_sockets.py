@@ -19,29 +19,27 @@ class DataStream:
         async with aiohttp.ClientSession() as session:
             self.web_socket = await session.ws_connect(self.endpoint)
             self.request_id = 0
-            while await self._handle_connection(self.web_socket):
-                pass
+            await self._handle_connection(self.web_socket)
 
     async def _handle_connection(self, web_socket):
-        msg = await web_socket.receive()
-        if msg.type in (aiohttp.WSMsgType.CLOSED, aiohttp.WSMsgType.CLOSE):
-            logging.error("The websocket is closed! Trying to reconnect.")
-            await self.connect() #todo: avoid reaching recursion limit
+        while True:
+            msg = await web_socket.receive()
+            if msg.type in (aiohttp.WSMsgType.CLOSED, aiohttp.WSMsgType.CLOSE):
+                logging.error("The websocket is closed! Trying to reconnect.")
+                await self.connect() #todo: avoid reaching recursion limit
 
-        elif msg.type is aiohttp.WSMsgType.ERROR:
-            logging.error(f"Something went wrong with the websocket, reconnecting...")
-            await self.connect() #todo: avoid reaching recursion limit
+            elif msg.type is aiohttp.WSMsgType.ERROR:
+                logging.error(f"Something went wrong with the websocket, reconnecting...")
+                await self.connect() #todo: avoid reaching recursion limit
 
-        data = json.loads(msg.data)
-        if "code" in data:
-            code = data["code"]
-            self._handle_errors(code, data)
+            data = json.loads(msg.data)
+            if "code" in data:
+                code = data["code"]
+                self._handle_errors(code, data)
 
-        if "method" in data:
-            method = data["method"]
-            asyncio.create_task(self._handle_response(method, data))
-
-        return True
+            if "method" in data:
+                method = data["method"]
+                asyncio.create_task(self._handle_response(method, data))
 
     async def request(
         self, method, params=None, request_id=None, response=False, signed=False
@@ -80,10 +78,9 @@ class DataStream:
 
     async def _handle_response(self, method, data):
         if method == "public/heartbeat":
-            logging.debug("HEARTBEAT")
             await self._heartbeat(data["id"])
         else:
-            logging.debug("TEST:" + data)
+            print("TEST:" + data)
 
     def _handle_errors(self, code, data):
         pass

@@ -34,6 +34,7 @@ async def main(loop):
     config = Config("config.toml", "config.template.toml")
     client = cryptocom.Client(config.api_key, config.api_secret)
     await client.load()
+    await client.market.auth()
 
 if __name__ == "__main__":
     loop = asyncio.get_event_loop()
