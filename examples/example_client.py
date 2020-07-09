@@ -1,4 +1,11 @@
-import sys, unittest, logging, asyncio, time, toml, os, shutil
+import sys
+import unittest
+import logging
+import asyncio
+import time
+import toml
+import os
+import shutil
 
 sys.path.append("../")
 import cryptocom
@@ -30,8 +37,6 @@ class Config:
 
 
 async def main(loop):
-    # /!\ Never hardcode your api secrets, prefer to use a config (I love toml, yaml is fine, json works)
-    # Don't forget to add your config to .gitignore and give a template
     config = Config("config.toml", "config.template.toml")
     client = cryptocom.Client(config.api_key, config.api_secret)
     await client.load_market()
