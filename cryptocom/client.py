@@ -2,7 +2,8 @@ from .web_sockets import UserDataStream, MarketDataStream
 from enum import Enum
 import hashlib
 import hmac
- 
+import asyncio
+
 class Client:
     def __init__(
         self,
@@ -16,15 +17,18 @@ class Client:
             raise ValueError(
                 "You cannot only specify a non empty api_key or an api_secret."
             )
+        self.api_key = api_key
+        self.api_secret = api_secret
         self.endpoint = endpoint
         self.user_agent = user_agent
 
-    async def load(self):
-        self.user = UserDataStream(self,  f"{self.endpoint}/user", self.user_agent)
-        self.market = MarketDataStream(self,  f"{self.endpoint}/market", self.user_agent)
+    async def load_user(self):
+        self.user = UserDataStream(self, f"{self.endpoint}/user", self.user_agent)
         await self.user.connect()
+
+    async def load_market(self):
+        self.market = MarketDataStream(self, f"{self.endpoint}/market", self.user_agent)
         await self.market.connect()
-       
 
     def _generate_signature(self, data):
         return hmac.new(

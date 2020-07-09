@@ -3,7 +3,7 @@ import sys, unittest, logging, asyncio, time, toml, os, shutil
 sys.path.append("../")
 import cryptocom
 
-logging.basicConfig(level=logging.INFO)
+logging.basicConfig(level=logging.DEBUG)
 
 
 class Config:
@@ -28,13 +28,17 @@ class Config:
         self.api_key = binance["api_key"]
         self.api_secret = binance["api_secret"]
 
+
 async def main(loop):
     # /!\ Never hardcode your api secrets, prefer to use a config (I love toml, yaml is fine, json works)
     # Don't forget to add your config to .gitignore and give a template
     config = Config("config.toml", "config.template.toml")
     client = cryptocom.Client(config.api_key, config.api_secret)
-    await client.load()
+    await client.load_market()
+    print("market endpoints loaded!")
     await client.market.auth()
+    await client.market.get_instruments()
+
 
 if __name__ == "__main__":
     loop = asyncio.get_event_loop()
